@@ -1,0 +1,18 @@
+
+
+groups:
+
+  - name: memcached_exporter.rules
+    rules:
+
+    - alert: MEMCACHEDInstanceDown
+      expr: memcached_up == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Instance {{ $labels.instance }} down"
+        description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
+
+
+
