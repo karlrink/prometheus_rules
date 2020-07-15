@@ -1,0 +1,101 @@
+
+
+groups:
+
+  - name: mysqld_exporter.rules
+    rules:
+
+    # MySQL down
+    - alert: MySQLServiceDown
+      expr: mysql_up == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Critical MySQL service is down
+        description: '{{ $labels.instance }} of job {{ $labels.job }} MySQL Service is down'
+
+    # MySQL too many connections
+    - alert: MySQLConnectionsMoreThan80PercentUsed
+      expr: avg by (instance) (max_over_time(mysql_global_status_threads_connected[5m])) / avg by (instance) (mysql_global_variables_max_connections) * 100 > 80
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - More than 80% of MySQL connections
+        description: '{{ $labels.instance }} of job {{ $labels.job }} More than 80% of MySQL connections'
+
+    # MySQL high threads running
+    - alert: MySQLThreadsMoreThan60inRunningState
+      expr: avg by (instance) (max_over_time(mysql_global_status_threads_running[5m])) / avg by (instance) (mysql_global_variables_max_connections) * 100 > 60
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - More than 60% of MySQL connections are in running state
+        description: '{{ $labels.instance }} of job {{ $labels.job }} More than 60% of MySQL connections are in running state'
+
+    # MySQL Slave IO thread not running
+    - alert: MySQLSlaveIONotRunning
+      expr: mysql_slave_status_master_server_id > 0 and ON (instance) mysql_slave_status_slave_io_running == 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - MySQL Slave IO thread not running
+        description: '{{ $labels.instance }} of job {{ $labels.job }} MySQL Slave IO thread not running'
+
+    # MySQL Slave SQL thread not running
+    - alert: MySQLSlaveSQLNotRunning
+      expr: mysql_slave_status_master_server_id > 0 and ON (instance) mysql_slave_status_slave_sql_running == 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - MySQL Slave SQL thread not running
+        description: '{{ $labels.instance }} of job {{ $labels.job }} MySQL Slave SQL thread not running'
+
+    # MySQL Slave Replication lag
+    - alert: MySQLSlaveReplicationLag
+      expr: mysql_slave_status_master_server_id > 0 and ON (instance) (mysql_slave_status_seconds_behind_master - mysql_slave_status_sql_delay) > 300
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - MySQL Slave Replication Lag
+        description: '{{ $labels.instance }} of job {{ $labels.job }} MySQL Slave Replication Lag'
+
+
+    #  mysql_slave_status_seconds_behind_master  greater than 30 seconds
+    - alert: MySQLSecondsBehindMasterGreaterThan30
+      expr: mysql_slave_status_seconds_behind_master > 30
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Warning MySQL Slave Replication greater than 30 seconds Behind Master
+        description: '{{ $labels.instance }} of job {{ $labels.job }} MySQL Slave Replication greater than 30 seconds Behind Master.'
+
+
+    # MySQL Slow Queries
+    - alert: MySQLSlowQueries
+      expr: mysql_global_status_slow_queries > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - MySQL Slow Queries
+        description: '{{ $labels.instance }} of job {{ $labels.job }} MySQL Slow queries'
+
+    # MySQL restarted
+    - alert: MySQLRestarted
+      expr: mysql_global_status_uptime < 60
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - MySQL has just been restarted
+        description: '{{ $labels.instance }} of job {{ $labels.job }} MySQL has just been restarted '
+
+
+
