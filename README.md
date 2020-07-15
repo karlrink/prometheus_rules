@@ -2,14 +2,14 @@
 
 ```
 rule_files:
-  - "default.rules"
-  - "node_exporter.rules"
-  - "jmx_exporter.rules"
-  - "mysqld_exporter.rules"
-  - "mongodb_exporter.rules"
-  - "haproxy_exporter.rules"
-  - "verifi_exporter.rules"
-  - "memcached_exporter.rules"
+  - "prometheus_rules/default.rules"
+  - "prometheus_rules/node_exporter.rules"
+  - "prometheus_rules/jmx_exporter.rules"
+  - "prometheus_rules/mysqld_exporter.rules"
+  - "prometheus_rules/mongodb_exporter.rules"
+  - "prometheus_rules/haproxy_exporter.rules"
+  - "prometheus_rules/verifi_exporter.rules"
+  - "prometheus_rules/memcached_exporter.rules"
 
 ```
 
