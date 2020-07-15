@@ -1,0 +1,108 @@
+
+
+groups:
+
+  - name: jmx_exporter.rules
+    rules:
+
+    # jvm_memory_bytes_used greater than 10 gigs
+    - alert: JVMMemBytesUsedGreaterThan10Gigs
+      expr: jvm_memory_bytes_used{area="heap"} / 1024 / 1024 / 1024 > 10
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Warning jvm_memory_bytes_used greater than 10 gigs
+        description: '{{ $labels.instance }} of job {{ $labels.job }} jvm_memory_bytes_used greater than 10 gigs.'
+
+    # jvm_threads_current greater than 2500
+    - alert: JVMTreadsGreaterThan2500
+      expr: jvm_threads_current > 2500
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Warning jvm_threads_current greater than 2500
+        description: '{{ $labels.instance }} of job {{ $labels.job }} jvm_threads_current greater than 2500.'
+
+    # Resin Server 500 errors
+    - alert: ResinWebApp500errors
+      expr: resin_WebApp_Status500CountTotal > 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Warning resin_WebApp_Status500 errors
+        description: '{{ $labels.instance }} of job {{ $labels.job }} resin_WebApp_Status500 errors.'
+
+
+    # Resin Server 500 errors
+    - alert: ResinWebApp500errors
+      #expr: rate(resin_WebApp_Status500CountTotal[5m]) > 0
+      expr: rate(resin_WebApp_Status500CountTotal[2m]) > 0.05
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Warning resin_WebApp_Status500 errors greater than 0.05
+        description: '{{ $labels.instance }} of job {{ $labels.job }} resin_WebApp_Status500 errors greater than 0.05.'
+
+
+
+    # Resin Server CPU Load Average greater than 8
+    - alert: ResinServerCpuLoadAvg
+      expr: resin_Server_CpuLoadAvg > 8
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Warning ResinServerCpuLoadAvg greater than 8
+        description: '{{ $labels.instance }} of job {{ $labels.job }} ResinServerCpuLoadAvg greater than 8.'
+
+    # Resin Server Database Connections greater than 500
+    - alert: ResinServerDBConnectionsGreaterThan500
+      expr: rate(resin_Database_ConnectionCountTotal[5m]) > 500
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Warning ResinServerDBConnections greater than 500
+        description: '{{ $labels.instance }} of job {{ $labels.job }} ResinServerDBConnections greater than 500.'
+
+    # JVM Memory greater than 80 percent
+    - alert: JVMMemoryGreaterThan80Percent
+      expr: jvm_memory_bytes_used / jvm_memory_bytes_max{area="heap"} > 0.8
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Warning JVM Memory greater than 80 percent full
+        description: '{{ $labels.instance }} of job {{ $labels.job }} JVM Memory greater than 80 percent full.'
+
+
+
+    # Predict JVM Out Of Memory in 1 hour
+    - alert: PredictJVMOutOfMemory1hour
+      expr: predict_linear(node_memory_MemAvailable[2h], 1*3600) <= 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Warning ResinServerDBConnections greater than 250
+        description: '{{ $labels.instance }} of job {{ $labels.job }} ResinServerDBConnections greater than 250.'
+
+
+
+    # Resin Server Restarted
+    - alert: ResinServerRestarted
+      expr: resin_server_uptime / 60000 < 10
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Resin server restarted
+        description: '{{ $labels.instance }} of job {{ $labels.job }} Resin server restarted'
+
+
+
+
