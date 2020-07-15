@@ -1,0 +1,157 @@
+
+
+groups:
+
+  - name: haproxy_exporter.rules
+    doc_url: https://github.com/prometheus/haproxy_exporter
+    rules:
+
+    - alert: HAProxyDown
+      expr: haproxy_up == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - HAProxy is Down
+        description: '{{ $labels.instance }} of job {{ $labels.job }} HAProxy is Down'
+
+    - alert: HAProxyBackendDown
+      expr: haproxy_backend_up{backend!~"be_urlselect"} == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - HAProxy Backend is Down
+        description: '{{ $labels.instance }} of job {{ $labels.job }} HAProxy Backend is Down'
+
+    - alert: HAProxyServerDown
+      expr: haproxy_server_up == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - HAProxy Server is Down
+        description: '{{ $labels.instance }} of job {{ $labels.job }} HAProxy Server is Down'
+
+
+    - alert: HAProxyHighHTTP4xxErrorRateBackendGreaterThan10Percent
+      expr: sum by (backend) (irate(haproxy_server_http_responses_total{code="4xx"}[1m])) / sum by (backend) (irate(haproxy_server_http_responses_total{}[1m])) * 100 > 10
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Too many HTTP requests with status 4xx (> 10%) on backend {{ $labels.fqdn }}/{{ $labels.backend }}
+        description: '{{ $labels.instance }} of job {{ $labels.job }} Too many HTTP requests with status 4xx (> 10%) on backend {{ $labels.fqdn }}/{{ $labels.backend }}'
+
+    - alert: HAProxyHighHTTP5xxErrorRateBackend
+      expr: sum by (backend) (irate(haproxy_server_http_responses_total{code="5xx"}[1m])) / sum by (backend) (irate(haproxy_server_http_responses_total{}[1m])) * 100 > 5
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Too many HTTP requests with status 5xx (> 5%) on backend {{ $labels.fqdn }}/{{ $labels.backend }}
+        description: '{{ $labels.instance }} of job {{ $labels.job }} Too many HTTP requests with status 5xx (> 5%) on backend {{ $labels.fqdn }}/{{ $labels.backend }}'
+
+    - alert: HAProxyHighHTTP4xxErrorRateServer
+      expr: sum by (server) (irate(haproxy_server_http_responses_total{code="4xx"}[1m])) / sum by (backend) (irate(haproxy_server_http_responses_total{}[1m])) * 100 > 5
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Too many HTTP requests with status 4xx (> 5%) on server {{ $labels.server }}
+        description: '{{ $labels.instance }} of job {{ $labels.job }} Too many HTTP requests with status 4xx (> 5%) on server {{ $labels.server }}'
+
+    - alert: HAProxyHighHTTP5xxErrorRateServer
+      expr: sum by (server) (irate(haproxy_server_http_responses_total{code="5xx"}[1m])) / sum by (backend) (irate(haproxy_server_http_responses_total{}[1m])) * 100 > 5
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Too many HTTP requests with status 5xx (> 5%) on server {{ $labels.server }}
+        description: '{{ $labels.instance }} of job {{ $labels.job }} Too many HTTP requests with status 5xx (> 5%) on server {{ $labels.server }}'
+
+    - alert: HAProxyBackendConnectionErrors
+      expr: sum by (backend) (rate(haproxy_backend_connection_errors_total[1m])) * 100 > 5
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Too many connection errors to {{ $labels.fqdn }}/{{ $labels.backend }} backend (> 5%) Request throughput may be to high
+        description: '{{ $labels.instance }} of job {{ $labels.job }} Too many connection errors to {{ $labels.fqdn }}/{{ $labels.backend }} backend (> 5%) Request throughput may be to high'
+
+    - alert: HAProxyServerResponseErrors
+      expr: sum by (server) (rate(haproxy_server_response_errors_total[1m])) * 100 > 5
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Too many response errors to {{ $labels.server }} server (> 5%)
+        description: '{{ $labels.instance }} of job {{ $labels.job }} Too many response errors to {{ $labels.server }} server (> 5%)'
+
+    - alert: HAProxyServerConnectionErrors
+      expr: sum by (server) (rate(haproxy_server_connection_errors_total[1m])) * 100 > 5
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - server (> 5%) Request throughput may be to high
+        description: '{{ $labels.instance }} of job {{ $labels.job }} server (> 5%) Request throughput may be to high'
+
+    - alert: HAProxyBackendMaxActiveSessionsGreaterThan90Percent
+      expr: avg(sum by (backend) (haproxy_server_max_sessions) / sum by (backend) (haproxy_backend_limit_sessions)) * 100 > 90
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - HAproxy backend {{ $labels.fqdn }}/{{ $labels.backend }} is reaching session limit (> 90%)
+        description: '{{ $labels.instance }} of job {{ $labels.job }} HAproxy backend {{ $labels.fqdn }}/{{ $labels.backend }} is reaching session limit (> 90%)'
+
+    - alert: HAProxyPendingRequests
+      expr: sum by (backend) (haproxy_backend_current_queue) > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - HAProxy requests are pending on {{ $labels.fqdn }}/{{ $labels.backend }} backend
+        description: '{{ $labels.instance }} of job {{ $labels.job }} HAProxy requests are pending on {{ $labels.fqdn }}/{{ $labels.backend }} backend'
+
+    - alert: HAProxyHTTPSlowingDown
+      expr: avg by (backend) (haproxy_backend_http_total_time_average_seconds) > 2
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Average request time is increasing
+        description: '{{ $labels.instance }} of job {{ $labels.job }} Average request time is increasing'
+
+    - alert: HAProxyRetryHigh
+      expr: sum by (backend) (rate(haproxy_backend_retry_warnings_total[1m])) > 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - High rate of retry on {{ $labels.fqdn }}/{{ $labels.backend }} backend
+        description: '{{ $labels.instance }} of job {{ $labels.job }} High rate of retry on {{ $labels.fqdn }}/{{ $labels.backend }} backend'
+
+
+    - alert: HAProxyFrontendSecurityBlockedRequests
+      expr: sum by (frontend) (rate(haproxy_frontend_requests_denied_total[1m])) > 10
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - HAProxy is blocking requests for security reason
+        description: '{{ $labels.instance }} of job {{ $labels.job }} HAProxy is blocking requests for security reason'
+
+    - alert: HAProxyServerHealthcheckFailure
+      expr: increase(haproxy_server_check_failures_total[1m]) > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - HAProxy server healthcheck are failing on {{ $labels.server }}
+        description: '{{ $labels.instance }} of job {{ $labels.job }} HAProxy server healthcheck are failing on {{ $labels.server }}'
+
+
+
+
