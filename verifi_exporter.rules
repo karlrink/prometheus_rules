@@ -1,0 +1,65 @@
+
+
+groups:
+
+  - name: verifi_exporter.rules
+    rules:
+
+    # Successful sale
+    - alert: VerifiSaleSuccess100
+      expr: verifi_response_code_count{code="100", message="success", type="sale"} > 0
+      for: 1m
+      labels:
+        severity: info
+        owner: verifi
+      annotations:
+        summary: Instance {{ $labels.instance }} - verifi Info code 100 success sale occurred
+        description: "{{ $labels.instance }} of job {{ $labels.job }} verifi Info code 100 success sale occurred\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Error 411 (any errors immediate notification)
+    - alert: VerifiError411
+      expr: verifi_response_code_count{code="411"} > 0
+      for: 1m
+      labels:
+        severity: critical
+        owner: verifi
+      annotations:
+        summary: Instance {{ $labels.instance }} - verifi Critical Error 411 occurred
+        description: "{{ $labels.instance }} of job {{ $labels.job }} verifi Critical Error 411 occurred\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Error 300 (>5 errors in 10 min)
+    - alert: VerifiError300GreaterThan5in10PerInstance
+      expr: count by (instance) (verifi_response_code_count{code="300"}) > 5
+      for: 10m
+      labels:
+        severity: warning
+        owner: verifi
+      annotations:
+        summary: Instance {{ $labels.instance }} - verifi Warning Error 300 more than 5 in 10 minutes
+        description: "{{ $labels.instance }} of job {{ $labels.job }} verifi Warning Error 300 more than 5 in 10 minutes\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Error 400 with Response Text = “Daily threshold exceeded” (any errors immediate notification)
+    - alert: VerifiError400WithResponseTextMatch_exceeded
+      expr: verifi_response_code_count{code="400", message=~".*exceeded.*"} > 0
+      for: 1m
+      labels:
+        severity: critical
+        owner: verifi
+      annotations:
+        summary: Instance {{ $labels.instance }} - verifi Critical Error 400 with text match _exceeded_
+        description: "{{ $labels.instance }} of job {{ $labels.job }} verifi Warning Error 400 with text match _exceeded_\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Any Response Text = Invalid processor REFID (except validate)
+    - alert: VerifiResponseMessageWithTextMatch_invalid_processor_refid_except_validate
+      expr: verifi_response_code_count{message=~".*invalid processor refid.*",type!="validate"} > 0
+      for: 1m
+      labels:
+        severity: warning
+        owner: verifi
+      annotations:
+        summary: Instance {{ $labels.instance }} - verifi Warning Response Message with text match _invalid_processor_refid_ except validate
+        description: "{{ $labels.instance }} of job {{ $labels.job }} verifi Warning Response Message with text match _invalid_processor_refid_ except validate\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+
+
