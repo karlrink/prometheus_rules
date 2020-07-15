@@ -1,0 +1,25 @@
+
+groups:
+
+  - name: default.rules
+    rules:
+
+    - alert: InstanceDown
+      expr: up == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Instance {{ $labels.instance }} down"
+        description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
+
+    - alert: PrometheusIngestionThrottling
+      expr: prometheus_local_storage_persistence_urgency_score > 0.95
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        description: 'Prometheus cannot persist chunks to disk fast enough. Urgency value is {{$value}}.'
+        summary: Prometheus is (or borderline) throttling ingestion of metrics
+
+
