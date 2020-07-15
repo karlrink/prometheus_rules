@@ -1,0 +1,380 @@
+
+
+groups:
+
+  - name: node_exporter.rules
+    rules:
+
+    # Instead of a fixed threshold, alert if the disk is going to fill up in 4 hours time
+    - alert: HostDiskWillFillIn4Hours
+      expr: predict_linear(node_filesystem_free_bytes{fstype!~"tmpfs"}[1h], 4 * 3600) < 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host disk will fill in 4 hours (instance {{ $labels.instance }})"
+        description: "Disk will fill in 4 hours at current write rate\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Disk is almost full (< 10% left)
+    - alert: HostOutOfDiskSpace
+      expr: (node_filesystem_avail_bytes{mountpoint="/"}  * 100) / node_filesystem_size_bytes{mountpoint="/"} < 10
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host out of disk space (instance {{ $labels.instance }})"
+        description: "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # Node memory is filling up (< 10% left) (node_memory_MemAvailable older node_exporter)
+    - alert: HostOutOfMemoryMemAvailableLessThan10Percent
+      expr: node_memory_MemAvailable / node_memory_MemTotal * 100 < 10
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host out of memory (instance {{ $labels.instance }})"
+        description: "Node memory is filling up (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # Node memory is filling up (< 10% left) (node_memory_MemAvailable_bytes newer node_exporter)
+    - alert: HostOutOfMemoryMemAvailable_bytesLessThan10Percent
+      expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host out of memory (instance {{ $labels.instance }})"
+        description: "Node memory is filling up (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # The node is under heavy memory pressure. High rate of major page faults
+    - alert: HostMemoryUnderMemoryPressure
+      expr: rate(node_vmstat_pgmajfault[1m]) > 1000
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host memory under memory pressure (instance {{ $labels.instance }})"
+        description: "The node is under heavy memory pressure. High rate of major page faults\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Host network interfaces are probably receiving too much data (> 100 MB/s)
+    - alert: HostUnusualNetworkThroughputIn
+      expr: sum by (instance) (irate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 100
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host unusual network throughput in (instance {{ $labels.instance }})"
+        description: "Host network interfaces are probably receiving too much data (> 100 MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Host network interfaces are probably sending too much data (> 100 MB/s)
+    - alert: HostUnusualNetworkThroughputOut
+      expr: sum by (instance) (irate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 100
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host unusual network throughput out (instance {{ $labels.instance }})"
+        description: "Host network interfaces are probably sending too much data (> 100 MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Disk is probably reading too much data (> 50 MB/s)
+    - alert: HostUnusualDiskReadRate
+      expr: sum by (instance) (irate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 50
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host unusual disk read rate (instance {{ $labels.instance }})"
+        description: "Disk is probably reading too much data (> 50 MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Disk is probably writing too much data (> 50 MB/s)
+    - alert: HostUnusualDiskWriteRate
+      expr: sum by (instance) (irate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 50
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host unusual disk write rate (instance {{ $labels.instance }})"
+        description: "Disk is probably writing too much data (> 50 MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Disk is almost running out of available inodes (< 10% left)
+    - alert: HostOutOfInodes
+      expr: node_filesystem_files_free{mountpoint ="/"} / node_filesystem_files{mountpoint ="/"} * 100 < 10
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host out of inodes (instance {{ $labels.instance }})"
+        description: "Disk is almost running out of available inodes (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Disk latency is growing (read operations > 100ms)
+    - alert: HostUnusualDiskReadLatency
+      expr: rate(node_disk_read_time_seconds_total[1m]) / rate(node_disk_reads_completed_total[1m]) > 100
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host unusual disk read latency (instance {{ $labels.instance }})"
+        description: "Disk latency is growing (read operations > 100ms)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Disk latency is growing (write operations > 100ms)
+    - alert: HostUnusualDiskWriteLatency
+      expr: rate(node_disk_write_time_seconds_total[1m]) / rate(node_disk_writes_completed_total[1m]) > 100
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host unusual disk write latency (instance {{ $labels.instance }})"
+        description: "Disk latency is growing (write operations > 100ms)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # CPU load is > 80%
+    - alert: HostHighCpuLoad
+      expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host high CPU load (instance {{ $labels.instance }})"
+        description: "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # 1000 context switches is an arbitrary number.
+    # Alert threshold depends on nature of application.
+    # Please read: https://github.com/samber/awesome-prometheus-alerts/issues/58
+    # Context switching is growing on node (> 1000 / s)
+    - alert: HostContextSwitching
+      expr: (rate(node_context_switches_total[5m])) / (count without(cpu, mode) (node_cpu_seconds_total{mode="idle"})) > 1000
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host context switching (instance {{ $labels.instance }})"
+        description: "Context switching is growing on node (> 1000 / s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Swap is filling up (>80%)
+    - alert: HostSwapIsFillingUp
+      expr: (1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100 > 80
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host swap is filling up (instance {{ $labels.instance }})"
+        description: "Swap is filling up (>80%)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Physical hardware component too hot
+    - alert: HostPhysicalComponentTooHot
+      expr: node_hwmon_temp_celsius > 75
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host physical component too hot (instance {{ $labels.instance }})"
+        description: "Physical hardware component too hot\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Physical node temperature alarm triggered
+    - alert: HostNodeOvertemperatureAlarm
+      expr: node_hwmon_temp_alarm == 1
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Host node overtemperature alarm (instance {{ $labels.instance }})"
+        description: "Physical node temperature alarm triggered\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # RAID array {{ $labels.device }} is in degraded state due to one or more disks failures.
+    # Number of spare drives is insufficient to fix issue automatically.
+    - alert: HostRaidArrayGotInactive
+      expr: node_md_state{state="inactive"} > 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Host RAID array got inactive (instance {{ $labels.instance }})"
+        description: "RAID array {{ $labels.device }} is in degraded state due to one or more disks failures. Number of spare drives is insufficient to fix issue automatically.\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # At least one device in RAID array on {{ $labels.instance }} failed
+    # Array {{ $labels.md_device }} needs attention and possibly a disk swap
+    - alert: HostRaidDiskFailure
+      expr: node_md_disks{state="fail"} > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host RAID disk failure (instance {{ $labels.instance }})"
+        description: "At least one device in RAID array on {{ $labels.instance }} failed. Array {{ $labels.md_device }} needs attention and possibly a disk swap\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Different kernel versions are running
+    - alert: HostKernelVersionDeviations
+      expr: count(sum(label_replace(node_uname_info, "kernel", "$1", "release", "([0-9]+.[0-9]+.[0-9]+).*")) by (kernel)) > 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host kernel version deviations (instance {{ $labels.instance }})"
+        description: "Different kernel versions are running\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Host OOM kill detected
+    - alert: HostOomKillDetected
+      expr: increase(node_vmstat_oom_kill[30m]) > 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host OOM kill detected (instance {{ $labels.instance }})"
+        description: "OOM kill detected\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # Disk Space less Than 5 percent
+    - alert: DiskSpaceLessThan5Percent
+      expr: node_filesystem_free{fstype=~"ext4|xfs|zfs"} / node_filesystem_size{fstype=~"ext4|xfs|zfs"} < 0.05
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Warning disk space usage less than 5% remaining
+        description: '{{ $labels.instance }} of job {{ $labels.job }} has less than 5% space remaining.'
+
+    # Disk Space Is 90 percent
+    - alert: DiskSpace90PercentFull
+      expr: max(((node_filesystem_size{fstype=~"ext4|vfat"} - node_filesystem_free{fstype=~"ext4|vfat"}) / node_filesystem_size{fstype=~"ext4|vfat"}) * 100) by (instance) > 90
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Warning disk space is 90 percent full
+        description: '{{ $labels.instance }} of job {{ $labels.job }} disk space is 90 percent full.'
+
+    # Disk Space Root file system
+    - alert: PreditciveRootDiskSpace
+      expr: predict_linear(node_filesystem_free{mountpoint="/"}[4h], 4 * 3600) < 0
+      for: 30m
+      labels:
+        severity: warning
+      annotations:
+        description: 'Based on recent sampling, the disk is likely to will fill on volume
+          {{ $labels.mountpoint }} within the next 4 hours for instace: {{ $labels.instance_id
+          }} tagged as: {{ $labels.instance_name_tag }}'
+        summary: Predictive Disk Space Utilisation Alert
+
+    # Memory of a host is almost full.
+    # This is done by deducting the total memory by the free,
+    # buffered and cached memory and dividing it by total again to obtain a percentage.
+    - alert: HighMemoryLoadGreaterThan85
+      expr: (sum(node_memory_MemTotal) - sum(node_memory_MemFree + node_memory_Buffers + node_memory_Cached) ) / sum(node_memory_MemTotal) * 100 > 85
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        description: 'Based on recent sampling, Memory is almost full
+          {{ $labels.instance_id }} tagged as: {{ $labels.instance_name_tag }}'
+        summary: High Memory Load Alert
+
+
+    # High CPU utilization greater than 70% for 20 minutes
+    - alert: HightCPUutilizationGreaterThan70
+      expr: 100 - (avg by(instance) (irate(node_cpu{mode="idle"}[5m])) * 100) > 70
+      for: 20m
+      labels:
+        severity: warning
+      annotations:
+        description: 'High CPU utilisation detected for instance {{ $labels.instance_id
+          }} tagged as: {{ $labels.instance_name_tag }}, the utilisation is currently:
+          {{ $value }}%'
+        summary: CPU Utilisation Alert
+
+    # Predict Disk space full in 7 days
+    - alert: PredictiveAlertNodeFileSystemAvail7Days
+      expr: predict_linear(node_filesystem_avail{fstype!~"squashfs|fuse.lxcfs|tmpfs|rpc_pipefs|debugfs"}[24h], 7*24*3600) <= 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        description: 'Predict Disk space full in 7 days'
+        summary: Predict Disk space full in 7 days Alert
+
+    # Predict Out of Memory in 1 hour
+    - alert: PredictiveAlertOutOfMemory1Hour
+      expr: predict_linear(node_memory_MemAvailable[2h], 1*3600) <= 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        description: 'Predict Out Of Memory in 1 hour'
+        summary: Predict Out of Memory in 1 hour Alert
+
+    # High Memory Pressure VMSTAT Page Major Fault
+    - alert: HighMemPressureVMSTAT
+      expr: (node_memory_MemAvailable /  node_memory_MemTotal * 100) < 5 and rate(node_vmstat_pgmajfault[1m]) > 100
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        description: 'High Memory Pressure VMSTAT Page Major Fault'
+        summary: High Memory Pressure VMSTAT Page Major Fault Alert
+
+    # High CPU Load5 95%
+    - alert: HighCPULoad95Percent
+      expr: node_load5/count(node_cpu{mode="idle"}) without (cpu,mode) >= 0.95
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        description: 'High CPU load greater than 95 percent'
+        summary: High CPU load greater than 95 percent Alert
+
+    # Host SystemD service crashed
+    - alert: HostSystemDServiceCrashed
+      expr: node_systemd_unit_state{state="failed"} == 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host SystemD service crashed  (instance {{ $labels.instance }})"
+        description: "Host SystemD service crashed  (instance {{ $labels.instance }})"
+
+    # Host EDAC Correctable Errors detected
+    - alert: HostEDACCorrectableErrorsDetected
+      expr: increase(node_edac_correctable_errors_total[5m]) > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Host EDAC Correctable Errors detected
+        description: '{{ $labels.instance }} of job {{ $labels.job }} Host EDAC Correctable Errors detected'
+
+    # Host EDAC Uncorrectable Errors detected
+    - alert: HostEDACUnCorrectableErrorsDetected
+      expr: node_edac_uncorrectable_errors_total > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Host EDAC UnCorrectable Errors detected
+        description: '{{ $labels.instance }} of job {{ $labels.job }} Host EDAC UnCorrectable Errors detected'
+
+    # Host Network Receive Errors
+    - alert: HostNetworkReceiveErrorsDetected
+      expr: increase(node_network_receive_errs_total[5m]) > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Host Network Receive Errors detected
+        description: '{{ $labels.instance }} of job {{ $labels.job }} Host Network Receive Errors detected'
+
+    # Host Network Transmit Errors
+    - alert: HostNetworkTransmitErrorsDetected
+      expr: increase(node_network_transmit_errs_total[5m]) > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Instance {{ $labels.instance }} - Host Network Transmit Errors detected
+        description: '{{ $labels.instance }} of job {{ $labels.job }} Host Network Transmit Errors detected'
+
+
+
+#expr: 100 - (avg by (instance) (irate(node_cpu{job="node_exporter",mode="idle"}[5m])) * 100) > 99
+#expr: node_memory_MemAvailable / node_memory_MemTotal * 100 < 10
+
+
