@@ -1,0 +1,112 @@
+
+groups:
+
+  - name: tu_python.rules
+    rules:
+
+    # Checks for response time based on histogram
+    - alert: ElevatedResponseTimes
+      expr: histogram_quantile(0.95, sum(rate(starlette_requests_processing_time_seconds_bucket{path_template !~ ".*healthcheck|metrics"}[10m])) by (path_template, le)) > 10
+      for: 10m
+      labels:
+        owner: tu
+        severity: error
+      annotations:
+        summary: "calls are taking more than 10 seconds (instance {{ $labels.instance }})"
+        description: "Calls to TU are elevated. 95th percentile average is longer than 10 seconds over 10 minute period. \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # Checks for authentication calls
+    - alert: NotEnoughAuthenticationCalls
+      expr: sum(increase(starlette_requests_total{path_template =~ ".*authentications"}[15m])) == 0
+      for: 10m
+      labels:
+        owner: tu
+        severity: error
+      annotations:
+        summary: "no auth calls in over 10 mins (instance {{ $labels.instance }})"
+        description: "no auth calls in over 10 mins for 10 consequentive mins. \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Checks for 422 error calls
+    - alert: TooMany422s
+      expr: increase(starlette_responses_total{status_code="422"}[10m]) >= 3
+      for: 5m
+      labels:
+        owner: tu
+        severity: error
+      annotations:
+        summary: "more than 2 xauth with 422 over 10 mins (instance {{ $labels.instance }})"
+        description: "More than 2 auth calls over 10 mins that resulted in 422. \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Checks for exception requests
+    - alert: TUExceptions
+      expr: increase(starlette_exceptions_total[5m]) > 0
+      for: 5m
+      labels:
+        owner: tu
+        severity: error
+      annotations:
+        summary: "Python Exception on TU calls (instance {{ $labels.instance }})"
+        description: "One or more python call caused an exception. \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Checks for non 2xx responses in calls
+    - alert: TUNon200Errors
+      expr: (increase(starlette_responses_total{status_code = "500", method != "DELETE"}[10m]) or increase(starlette_responses_total{status_code = "404", path_template !~ ".*/report"}[10m])  or increase(starlette_responses_total{status_code =~ "400|403"}[10m])) > 10
+      for: 5m
+      labels:
+        owner: tu
+        severity: error
+      annotations:
+        summary: "More than 10 non 200 errors over 10 mins (instance {{ $labels.instance }})"
+        description: "More than 10 errors of 400, 403, 404 or 500 errors got generated. \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Checks for 500 error rate 
+    - alert: TU500ErrorRate
+      expr: sum(rate(starlette_responses_total{status_code=~"5.*", method != 'DELETE'}[5m])) > .04 * sum(rate(starlette_responses_total[5m]))
+      for: 5m
+      labels:
+        owner: tu
+        severity: error
+      annotations:
+        summary: "More than 4% 5xx errors in 5 mins (instance {{ $labels.instance }})"
+        description: "More than 4% of the total requests are erroring out with 500 errors. \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Checks for 400 and 403 error rate 
+    - alert: TU4xxErrorRate
+      expr: sum(rate(starlette_responses_total{status_code=~"400|403"}[5m])) > .04 * sum(rate(starlette_responses_total[5m]))
+      for: 5m
+      labels:
+        owner: tu
+        severity: error
+      annotations:
+        summary: "More than 4% 4xx errors in 5 mins (instance {{ $labels.instance }})"
+        description: "More than 4% of the total requests are erroring out with 400 / 403 errors. \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Checks for 404 error rate 
+    - alert: TU404ErrorRate
+      expr: sum(rate(starlette_responses_total{status_code="404"}[5m])) > .1 * sum(rate(starlette_responses_total[5m]))
+      for: 5m
+      labels:
+        owner: tu
+        severity: error
+      annotations:
+        summary: "More than 10% 4xx errors in 5 mins (instance {{ $labels.instance }})"
+        description: "More than 10% of the total requests are erroring out with 404 errors. This is normal for report where front-end checks for previous report but should still be ideally less than 10% \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # Checks for 404 error rate 
+    - alert: TU404ExclReportErrorRate
+      expr: sum(rate(starlette_responses_total{status_code="404", path_template !~ ".*/report"}[5m])) > .04 * sum(rate(starlette_responses_total[5m]))
+      for: 5m
+      labels:
+        owner: tu
+        severity: error
+      annotations:
+        summary: "More than 4% 404 errors in non report calls in 5 mins (instance {{ $labels.instance }})"
+        description: "More than 4% of the total requests are erroring out with 404 errors, excluding credit report calls which error out in normal operation with 404 for missing previous report. \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+#expr: 100 - (avg by (instance) (irate(node_cpu{job="node_exporter",mode="idle"}[5m])) * 100) > 99
+#expr: node_memory_MemAvailable / node_memory_MemTotal * 100 < 10
+
+
+
