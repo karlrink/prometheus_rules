@@ -19,7 +19,7 @@ groups:
     # Checks for authentication calls
     - alert: NotEnoughAuthenticationCalls
       expr: sum(increase(starlette_requests_total{path_template =~ ".*authentications"}[15m])) == 0
-      for: 10m
+      for: 30m
       labels:
         owner: tu
         severity: error
@@ -51,7 +51,7 @@ groups:
 
     # Checks for non 2xx responses in calls
     - alert: TUNon200Errors
-      expr: (increase(starlette_responses_total{status_code = "500", method != "DELETE"}[10m]) or increase(starlette_responses_total{status_code = "404", path_template !~ ".*/report"}[10m])  or increase(starlette_responses_total{status_code =~ "400|403"}[10m])) > 10
+      expr: (increase(starlette_responses_total{status_code = "500", method != "DELETE"}[10m]) or increase(starlette_responses_total{status_code = "404", path_template !~ ".*/report"}[10m])  or increase(starlette_responses_total{status_code =~ "400|403"}[10m])) > 20
       for: 5m
       labels:
         owner: tu
