@@ -18,14 +18,14 @@ groups:
 
     # Checks for authentication calls
     - alert: NotEnoughAuthenticationCalls
-      expr: sum(increase(starlette_requests_total{path_template =~ ".*authentications"}[15m])) == 0
+      expr: sum(increase(starlette_requests_total{path_template =~ ".*authentications"}[30m])) == 0
       for: 30m
       labels:
         owner: tu
         severity: error
       annotations:
-        summary: "no auth calls in over 10 mins (instance {{ $labels.instance }})"
-        description: "no auth calls in over 10 mins for 10 consequentive mins. \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+        summary: "no auth calls in over 30 mins (instance {{ $labels.instance }})"
+        description: "no auth calls in over 30 mins for 30 consequentive mins. \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
     # Checks for 422 error calls
     - alert: TooMany422s
@@ -57,8 +57,8 @@ groups:
         owner: tu
         severity: error
       annotations:
-        summary: "More than 10 non 200 errors over 10 mins (instance {{ $labels.instance }})"
-        description: "More than 10 errors of 400, 403, 404 or 500 errors got generated. \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+        summary: "More than 20 non 200 errors over 10 mins (instance {{ $labels.instance }})"
+        description: "More than 20 errors of 400, 403, 404 or 500 errors got generated. \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
     # Checks for 500 error rate 
     - alert: TU500ErrorRate
