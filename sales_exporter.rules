@@ -1,0 +1,73 @@
+
+
+groups:
+
+  - name: sales_exporter.rules
+    rules:
+
+    # SQL alert down
+    - alert: Sales_Alert_SQL_Down
+      expr: sales_sql_data_alert_sql_up{} == 0
+      #expr: sales_sql_data_sales_since_last_month_success_sql_up{} == 0
+      #expr: sales_sql_data_seconds_since_last_noncascade_sale_sql_up{} == 0
+      for: 1m
+      labels:
+        severity: critical
+        owner: sales
+      annotations:
+        summary: Instance {{ $labels.instance }} - sales_sql_data_alert_sql_up Down
+        description: "{{ $labels.instance }} of job {{ $labels.job }} sales_sql_data_alert_sql_up Down\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # SQL sales_since_last_month_success down
+    - alert: Sales_last_month_success_SQL_Down
+      expr: sales_sql_data_sales_since_last_month_success_sql_up{} == 0
+      for: 1m
+      labels:
+        severity: critical
+        owner: sales
+      annotations:
+        summary: Instance {{ $labels.instance }} - sales_since_last_month_success Down
+        description: "{{ $labels.instance }} of job {{ $labels.job }} sales_since_last_month_success Down\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # SQL sales_sql_data_seconds_since_last_noncascade_sale down
+    - alert: Sales_seconds_since_last_noncascade_SQL_Down
+      expr: sales_sql_data_seconds_since_last_noncascade_sale_sql_up{} == 0
+      for: 1m
+      labels:
+        severity: critical
+        owner: sales
+      annotations:
+        summary: Instance {{ $labels.instance }} - sales_sql_data_seconds_since_last_noncascade_sale Down
+        description: "{{ $labels.instance }} of job {{ $labels.job }} sales_sql_data_seconds_since_last_noncascade_sale Down\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+#--------
+
+
+    # sales_sql_data_alert
+    - alert: Sales_sql_data_alert_gt_zero
+      expr: sales_sql_data_alert{} > 0
+      for: 1m
+      labels:
+        severity: warning
+        owner: sales
+      annotations:
+        summary: Instance {{ $labels.instance }} - Sales_sql_data_alert_gt_zero
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Sales_sql_data_alert_gt_zero \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # sales_sql_data_sales_since_last_month_success_fail
+    - alert: Sales_sql_data_sales_since_last_month_success_fail
+      expr: sales_sql_data_sales_since_last_month_success == -1
+      for: 1m
+      labels:
+        severity: warning
+        owner: sales
+      annotations:
+        summary: Instance {{ $labels.instance }} - Sales_sql_data_sales_since_last_month_success_fail
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Sales_sql_data_sales_since_last_month_success_fail \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+
+
