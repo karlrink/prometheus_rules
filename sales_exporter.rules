@@ -69,5 +69,230 @@ groups:
         description: "{{ $labels.instance }} of job {{ $labels.job }} Sales_sql_data_sales_since_last_month_success_fail \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
+#--------
+#
+# OpsGenie Teams
+
+#1  # Internal_Ancillary_Revenue_credco
+    - alert: Internal_Ancillary_Revenue_credco
+      expr: sales_sql_data_alert{partner_name="Internal_Ancillary_Revenue",vertical="credco"} > 0
+      for: 1m
+      labels:
+        owner: Internal_Ancillary_Revenue_credco
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Internal_Ancillary_Revenue_credco
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Internal_Ancillary_Revenue_credco \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#2  # Internal_Cascade_Decliners_credco
+    - alert: Internal_Cascade_Decliners_credco
+      expr: sales_sql_data_alert{partner_name="Internal_Cascade_Decliners",vertical="credco"} > 0
+      for: 1m
+      labels:
+        owner: Internal_Cascade_Decliners_credco
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Internal_Ancillary_Revenue_credco
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Internal_Ancillary_Revenue_credco \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#3  # Internal_Cascade_Prepaids_credco
+    - alert: Internal_Cascade_Prepaids_credco
+      expr: sales_sql_data_alert{partner_name="Internal_Cascade_Prepaids",vertical="credco"} > 0
+      for: 1m
+      labels:
+        owner: Internal_Cascade_Prepaids_credco
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Internal_Cascade_Prepaids_credco
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Internal_Cascade_Prepaids_credco \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#4  # Internal_Cascade_BIN_credco
+    - alert: Internal_Cascade_BIN_credco
+      expr: sales_sql_data_alert{partner_name="Internal_Cascade_BIN",vertical="credco"} > 0
+      for: 1m
+      labels:
+        owner: Internal_Cascade_BIN_credco
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Internal_Cascade_BIN_credco
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Internal_Cascade_BIN_credco \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#5  # Xanadu_Marketing_credco
+    - alert: Xanadu_Marketing_credco
+      expr: sales_sql_data_alert{partner_name="Xanadu Marketing",vertical="credco"} > 0
+      for: 1m
+      labels:
+        owner: Xanadu_Marketing_credco
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Xanadu_Marketing_credco
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Xanadu_Marketing_credco \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#6  # RateSpecial_credco
+    - alert: RateSpecial_credco
+      expr: sales_sql_data_alert{partner_name="RateSpecial",vertical="credco"} > 0
+      for: 1m
+      labels:
+        owner: RateSpecial_credco
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - RateSpecial_credco
+        description: "{{ $labels.instance }} of job {{ $labels.job }} RateSpecial_credco \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#7  # Fluent_credco
+    - alert: Fluent_credco
+      expr: sales_sql_data_alert{partner_name="Fluent",vertical="credco"} > 0
+      for: 1m
+      labels:
+        owner: Fluent_credco
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Fluent_credco
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Fluent_credco \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#8  # Big_Steps_Marketing_credco
+    - alert: Big_Steps_Marketing_credco
+      expr: sales_sql_data_alert{partner_name="Big Steps Marketing",vertical="credco"} > 0
+      for: 1m
+      labels:
+        owner: Big_Steps_Marketing_credco
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Big_Steps_Marketing_credco
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Big_Steps_Marketing_credco \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#9  # Internal_SEM_foreclosure
+    - alert: Internal_SEM_foreclosure
+      expr: sales_sql_data_alert{partner_name="Internal_SEM",vertical="foreclosure"} > 0
+      for: 1m
+      labels:
+        owner: Internal_SEM_foreclosure
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Internal_SEM_foreclosure
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Internal_SEM_foreclosure \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+#10 # Internal_SMS_foreclosure
+    - alert: Internal_SMS_foreclosure
+      expr: sales_sql_data_alert{partner_name="Internal_SMS",vertical="foreclosure"} > 0
+      for: 1m
+      labels:
+        owner: Internal_SMS_foreclosure
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Internal_SMS_foreclosure
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Internal_SMS_foreclosure \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#11 # Internal_Cascade_Decliners_foreclosure
+    - alert: Internal_Cascade_Decliners_foreclosure
+      expr: sales_sql_data_alert{partner_name="Internal_Cascade_Decliners",vertical="foreclosure"} > 0
+      for: 1m
+      labels:
+        owner: Internal_Cascade_Decliners_foreclosure
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Internal_Cascade_Decliners_foreclosure
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Internal_Cascade_Decliners_foreclosure \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#12 # Internal_Cascade_Prepaids_foreclosure_rto
+    - alert: Internal_Cascade_Prepaids_foreclosure_rto
+      expr: sales_sql_data_alert{partner_name="Internal_Cascade_Prepaids",vertical="foreclosure_rto"} > 0
+      for: 1m
+      labels:
+        owner: Internal_Cascade_Prepaids_foreclosure_rto
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Internal_Cascade_Prepaids_foreclosure_rto
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Internal_Cascade_Prepaids_foreclosure_rto \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#13 # Fluent_foreclosure_rto
+    - alert: Fluent_foreclosure_rto
+      expr: sales_sql_data_alert{partner_name="Fluent",vertical="foreclosure_rto"} > 0
+      for: 1m
+      labels:
+        owner: Fluent_foreclosure_rto
+        severity: critical 
+      annotations:
+        summary: Instance {{ $labels.instance }} - Fluent_foreclosure_rto
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Fluent_foreclosure_rto \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#14 # Internal_Cascade_Decliners_rto
+    - alert: Internal_Cascade_Decliners_rto
+      expr: sales_sql_data_alert{partner_name="Internal_Cascade_Decliners",vertical="rto"} > 0
+      for: 1m
+      labels:
+        owner: Internal_Cascade_Decliners_rto
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Internal_Cascade_Decliners_rto
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Internal_Cascade_Decliners_rto \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#15 # Internal_Cascade_Prepaids_rto
+    - alert: Internal_Cascade_Prepaids_rto
+      expr: sales_sql_data_alert{partner_name="Internal_Cascade_Prepaids",vertical="rto"} > 0
+      for: 1m
+      labels:
+        owner: Internal_Cascade_Prepaids_rto
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Internal_Cascade_Prepaids_rto
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Internal_Cascade_Prepaids_rto \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#16 # Internal_Cascade_BIN_rto
+    - alert: Internal_Cascade_BIN_rto
+      expr: sales_sql_data_alert{partner_name="Internal_Cascade_BIN",vertical="rto"} > 0
+      for: 1m
+      labels:
+        owner: Internal_Cascade_BIN_rto
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Internal_Cascade_BIN_rto
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Internal_Cascade_BIN_rto \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#17 # LeadQual_rto
+    - alert: LeadQual_rto
+      expr: sales_sql_data_alert{partner_name="LeadQual",vertical="rto"} > 0
+      for: 1m
+      labels:  
+        owner: LeadQual_rto
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - LeadQual_rto
+        description: "{{ $labels.instance }} of job {{ $labels.job }} LeadQual_rto \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#18 # SkyRocket_rto
+    - alert: SkyRocket_rto
+      expr: sales_sql_data_alert{partner_name="SkyRocket",vertical="rto"} > 0
+      for: 1m
+      labels:
+        owner: SkyRocket_rto
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - SkyRocket_rto
+        description: "{{ $labels.instance }} of job {{ $labels.job }} SkyRocket_rto \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#19 # Fluent_rto
+    - alert: Fluent_rto
+      expr: sales_sql_data_alert{partner_name="Fluent",vertical="rto"} > 0
+      for: 1m
+      labels:
+        owner: Fluent_rto
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Fluent_rto
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Fluent_rto \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#20 # RxMG_rto
+    - alert: RxMG_rto
+      expr: sales_sql_data_alert{partner_name="RxMG",vertical="rto"} > 0
+      for: 1m     
+      labels:
+        owner: RxMG_rto
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - RxMG_rto
+        description: "{{ $labels.instance }} of job {{ $labels.job }} RxMG_rto \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
 
 
