@@ -1,0 +1,99 @@
+
+global:
+  smtp_smarthost: 'localhost:25'
+  smtp_from: 'ops@nationsinfocorp.com'
+  smtp_require_tls: false
+
+# The directory from which notification templates are read.
+templates: 
+- '/etc/prometheus/alertmanager_templates/*.tmpl'
+
+# The root route on which each incoming alert enters.
+route:
+  # The labels by which incoming alerts are grouped together. For example,
+  # multiple alerts coming in for cluster=A and alertname=LatencyHigh would
+  # be batched into a single group.
+  group_by: ['alertname', 'cluster', 'service']
+
+  # When a new group of alerts is created by an incoming alert, wait at
+  # least 'group_wait' to send the initial notification.
+  # This way ensures that you get multiple alerts for the same group that start
+  # firing shortly after another are batched together on the first 
+  # notification.
+  group_wait: 30s
+
+  # When the first notification was sent, wait 'group_interval' to send a batch
+  # of new alerts that started firing for that group.
+  group_interval: 5m
+
+  # If an alert has successfully been sent, wait 'repeat_interval' to
+  # resend them.
+  repeat_interval: 3h 
+
+  # A default receiver
+  receiver: 'ops-notices'
+
+  routes:
+  - match:
+      owner: verifi
+    receiver: 'verifi-notices'
+    continue: true
+  - match:
+      owner: tu
+    receiver: 'tu-notices'
+    continue: true
+  - match:
+      owner: sales
+    receiver: 'sales-notices'
+    continue: true
+
+
+# Inhibition rules allow to mute a set of alerts given that another alert is
+# firing.
+# We use this to mute any warning-level notifications if the same alert is 
+# already critical.
+inhibit_rules:
+- source_match:
+    severity: 'critical'
+  target_match:
+    severity: 'warning'
+  equal: ['alertname', 'cluster', 'service']
+
+# Recievers defined with email_configs and opsgenie_configs.
+receivers:
+
+- name: 'ops-notices'
+  webhook_configs:
+  - url: 'http://localhost:2000/alertmanager'
+    send_resolved: true
+  #opsgenie_configs:
+  #- api_key: 3d312c6b-71d0-4698-a9a4-01c393169db0
+  #email_configs:
+  #- to: 'ops@nationsinfocorp.com'
+
+- name: 'verifi-notices'
+  webhook_configs:
+  - send_resolved: true
+    url: 'http://localhost:2000/alertmanager'
+  email_configs:
+  - to: 'verifi@nationsinfocorp.com'
+
+- name: 'tu-notices'
+  webhook_configs:
+  - send_resolved: true
+    url: 'http://localhost:2000/alertmanager'
+  email_configs:
+  - to: 'tu_alerts@nationsinfocorp.com'
+  #opsgenie_configs:
+  #- api_key: 3d312c6b-71d0-4698-a9a4-01c393169db0
+
+- name: 'sales-notices'
+  webhook_configs:
+  - send_resolved: true
+    url: 'http://localhost:2000/alertmanager'
+  opsgenie_configs:
+  - api_key: 9541f053-6a55-41df-bfba-f096717911cd
+  #email_configs:
+  #- to: 'sales-notices@nationsinfocorp.com'
+
+ 
