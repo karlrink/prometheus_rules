@@ -1,0 +1,31 @@
+
+groups:
+
+  - name: billing_exporter.rules
+    rules:
+
+    # SQL alert down
+    - alert: Billing_Alert_SQL_Down
+      expr: billing_sql_up{} == 0
+      for: 1m
+      labels:
+        severity: critical
+        owner: billing
+      annotations:
+        summary: Instance {{ $labels.instance }} - billing_sql_up is Down
+        description: "{{ $labels.instance }} of job {{ $labels.job }} billing_sql_up is Down\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#--------
+
+    # billing_sql_alert_gt_zero
+    - alert: Billing_sql_alert_gt_zero
+      expr: billing_sql_alert{} > 0
+      for: 1m
+      labels:
+        severity: critical
+        owner: billing
+      annotations:
+        summary: Instance {{ $labels.instance }} - Billing_sql_alert_gt_zero
+        description: "{{ $labels.instance }} of job {{ $labels.job }} Billing_sql_alert_gt_zero \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
