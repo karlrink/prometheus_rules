@@ -1,0 +1,141 @@
+
+global:
+  scrape_interval: 30s
+  scrape_timeout:  10s
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+      monitor: 'prometheus1'
+
+alerting:
+  alertmanagers:
+    - scheme: http
+      path_prefix: /alertmanager
+      static_configs:
+        - targets: ['prometheus1:9093','prometheus2:9093']
+
+rule_files:
+  - "prometheus_rules/default.rules"
+  - "prometheus_rules/node_exporter.rules"
+  - "prometheus_rules/jmx_exporter.rules"
+  - "prometheus_rules/mysqld_exporter.rules"
+  - "prometheus_rules/mongodb_exporter.rules"
+  - "prometheus_rules/haproxy_exporter.rules"
+  - "prometheus_rules/memcached_exporter.rules"
+  - "prometheus_rules/verifi_exporter.rules"
+  - "prometheus_rules/sales_exporter.rules"
+  - "prometheus_rules/billing_exporter.rules"
+
+
+#remote_write:
+#  - url: https://metric-api.newrelic.com/prometheus/v1/write?prometheus_server=prometheus
+#    bearer_token: 92537b8de9fdc76959abcad0c3c209164af8954c
+
+scrape_configs:
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: [
+              'prometheus1:9100','prometheus2:9100',
+                  'db01:9100','smith:9100','wesson:9100','mauser:9100','sturm:9100','ruger:9100', 'db01repl4:9100',
+                  'heckler:9100','koch:9100','walther:9100','luger:9100','glock:9100','colt:9100',
+                  'benelli:9100','mossberg:9100',
+                  'prod-proxy:9100','prod-proxy2:9100',
+                  'appserv-smith:9100','appserv-wesson:9100','appserv-sturm:9100','appserv-ruger:9100','appserv-mauser:9100',
+                  'appserv-kimber:9100','appserv-benelli:9100','appserv-mossberg:9100','appserv-heckler:9100','appserv-koch:9100',
+                  'appserv-springfield:9100','appserv-walther:9100','appserv-luger:9100','appserv-guest4:9100','appserv-guest5:9100',
+                  'appserv-guest1:9100','appserv-guest2:9100','appserv-guest3:9100','prod-billing:9100','prod-3dsecure:9100',
+                  'cdb1:9100','cdb2:9100','cdb3:9100',
+                  'gdb1:9100','gdb2:9100','gdb3:9100',
+                  'db01repl:9100','db01repl2:9100','db01repl3:9100',
+                  'customer-centric:9100','mongodb1-2:9100','mongodb1-3:9100',
+                  'olb-breakwater:9100','loghost-prod:9100'
+                 ]
+
+
+  - job_name: 'jmx_exporter'
+    static_configs:
+      - targets: [
+                  'appserv-smith:9101','appserv-wesson:9101','appserv-sturm:9101','appserv-ruger:9101','appserv-mauser:9101',
+                  'appserv-kimber:9101','appserv-benelli:9101','appserv-mossberg:9101','appserv-heckler:9101','appserv-koch:9101',
+                  'appserv-springfield:9101','appserv-walther:9101','appserv-luger:9101','appserv-guest4:9101','appserv-guest5:9101',
+                  'appserv-guest1:9101','appserv-guest2:9101','appserv-guest3:9101','prod-billing:9101','prod-3dsecure:9101'
+                 ]
+
+  - job_name: 'jmx_exporter_activemq'
+    scrape_interval: 30s
+    scrape_timeout:  15s
+    static_configs:
+      - targets: [
+                  'appserv-smith:9102','appserv-wesson:9102','appserv-sturm:9102','appserv-ruger:9102','appserv-mauser:9102',
+                  'appserv-kimber:9102','appserv-benelli:9102','appserv-mossberg:9102','appserv-heckler:9102','appserv-koch:9102',
+                  'appserv-springfield:9102','appserv-walther:9102','appserv-luger:9102','appserv-guest4:9102','appserv-guest5:9102',
+                  'appserv-guest1:9102','appserv-guest2:9102','appserv-guest3:9102','prod-billing:9102','prod-3dsecure:9102'
+                 ]
+
+
+  - job_name: 'mysqld_exporter'
+    static_configs:
+      - targets: [
+                   'db01:9104','db01repl:9104','db01repl2:9104','db01repl3:9104', 'db01repl4:9104',
+                   'sturm:9104','ruger:9104',
+                   'cdb1:9104','cdb2:9104','cdb3:9104',
+                   'gdb1:9104','gdb2:9104','gdb3:9104'
+                 ]
+
+
+  - job_name: 'memcached_exporter'
+    static_configs:
+      - targets: ['walther:9150','luger:9150','heckler:9150','koch:9150', 'mauser:9150']
+
+
+  - job_name: 'mongodb_exporter'
+    static_configs:
+      - targets: [
+                  'customer-centric:9001','mongodb1-2:9001','mongodb1-3:9001'
+                  ]
+
+  - job_name: 'haproxy_exporter'
+    static_configs:
+      - targets: [ 'olb-breakwater:9101' ]
+
+  - job_name: 'apache_exporter'
+    static_configs:
+      - targets: [ 'appserv-kimber:9117' ]
+
+  - job_name: 'verifi_exporter'
+    scrape_interval: 15s
+    scrape_timeout:  5s
+    static_configs:
+      - targets: [ 'db01:9181','db01repl2:9181' ]
+
+  - job_name: 'sales_exporter'
+    scrape_interval: 30s
+    scrape_timeout:  10s
+    static_configs:
+      - targets: [ 'db01:9188','db01repl2:9188' ]
+
+  - job_name: 'billing_exporter'
+    scrape_interval: 30s
+    scrape_timeout:  10s
+    static_configs:
+      - targets: [ 'db01repl3:9184' ]
+
+
+#  - job_name: 'eo_exporter'
+#    scrape_interval: 30s
+#    scrape_timeout:  10s
+#    static_configs:
+#      - targets: [ 'db01repl3:9182' ]
+#
+#  - job_name: 'card_exporter'
+#    scrape_interval: 30s
+#    scrape_timeout:  10s
+#    static_configs:
+#      - targets: [ 'db01repl3:9183' ]
+
