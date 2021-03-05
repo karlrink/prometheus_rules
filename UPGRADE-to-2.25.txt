@@ -1,0 +1,11 @@
+
+
+#doc_url: https://github.com/dcu/mongodb_exporter
+#Mar 05 20:19:06 prometheus2 prometheus[2877]: level=error ts=2021-03-05T20:19:06.708Z caller=manager.go:946 component="rule manager" msg="loading groups failed" err="/etc/prometheus/prometheus_rules/mongodb_exporter.rules: yaml: unmarshal errors:\n  line 6: field doc_url not found in type rulefmt.RuleGroup"
+
+
+#Mar 05 20:21:37 prometheus2 prometheus[3036]: level=error ts=2021-03-05T20:21:37.682Z caller=manager.go:946 component="rule manager" msg="loading groups failed" err="/etc/prometheus/prometheus_rules/haproxy_exporter.rules: yaml: unmarshal errors:\n  line 6: field doc_url not found in type rulefmt.RuleGroup"
+
+
+
+

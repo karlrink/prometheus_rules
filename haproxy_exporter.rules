@@ -3,7 +3,6 @@
 groups:
 
   - name: haproxy_exporter.rules
-    doc_url: https://github.com/prometheus/haproxy_exporter
     rules:
 
     - alert: HAProxyDown

@@ -3,18 +3,17 @@
 groups:
 
   - name: mongodb_exporter.rules
-    doc_url: https://github.com/dcu/mongodb_exporter
     rules:
 
     ## MongoDB down
-    #- alert: MongoDBServiceDown
-    #  expr: mongodb_up == 0 # no standard service up?
-    #  for: 5m
-    #  labels:
-    #    severity: critical
-    #  annotations:
-    #    summary: Instance {{ $labels.instance }} - Critical MongoDB service is down
-    #    description: '{{ $labels.instance }} of job {{ $labels.job }} MongoDB Service is down'
+    - alert: MongoDBServiceDown
+      expr: mongodb_up == 0 # no standard service up?
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: Instance {{ $labels.instance }} - Critical MongoDB service is down
+        description: '{{ $labels.instance }} of job {{ $labels.job }} MongoDB Service is down'
 
 
     - alert: MongoDBReplicationLag
