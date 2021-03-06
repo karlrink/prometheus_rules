@@ -9,3 +9,5 @@ req = requests.delete("http://prom1:9093/alertmanager/api/v2/silence/{}".format(
 
 req.raise_for_status()
 
+print(req)
+
