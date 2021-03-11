@@ -55,6 +55,11 @@ route:
     receiver: 'billing-notices'
     continue: true
 
+  - match:
+      owner: sentinel
+    receiver: 'sentinel-notices'
+    continue: true
+
   #1
   - match:
       owner: Internal_Ancillary_Revenue_credco
@@ -234,6 +239,15 @@ receivers:
   - api_key: 9b458a2b-1bc4-4358-a9ea-a4b2d5ca35ac
   email_configs:
   - to: 'billing-alerts@nationsinfocorp.com'
+
+- name: 'sentinel-notices'
+  webhook_configs:
+  - send_resolved: true
+    url: 'http://localhost:2000/alertmanager'
+  opsgenie_configs:
+  - api_key: ca28f9c0-3480-40a7-abcb-e80d6c96ced5
+  email_configs:
+  - to: 'sentinel@nationsinfocorp.com'
 
 # OpsGenie salestracker
 

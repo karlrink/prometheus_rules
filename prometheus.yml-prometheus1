@@ -26,6 +26,7 @@ rule_files:
   - "prometheus_rules/verifi_exporter.rules"
   - "prometheus_rules/sales_exporter.rules"
   - "prometheus_rules/billing_exporter.rules"
+  - "prometheus_rules/sentinel_exporter.rules"
 
 
 #remote_write:
