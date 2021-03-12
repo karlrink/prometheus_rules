@@ -212,6 +212,8 @@ receivers:
     url: 'http://localhost:2000/alertmanager'
   email_configs:
   - to: 'verifi@nationsinfocorp.com'
+  opsgenie_configs:
+  - api_key: 9b458a2b-1bc4-4358-a9ea-a4b2d5ca35ac
 
 - name: 'tu-notices'
   webhook_configs:
