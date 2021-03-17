@@ -56,6 +56,11 @@ route:
     continue: true
 
   - match:
+      instance: 'prod-billing:9100'
+    receiver: 'billing-notices'
+    continue: true
+
+  - match:
       owner: sentinel
     receiver: 'sentinel-notices'
     continue: true
