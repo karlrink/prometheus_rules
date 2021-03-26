@@ -48,7 +48,7 @@ groups:
     # sales_sql_data_alert
     - alert: Sales_sql_data_alert_gt_zero
       expr: sales_sql_data_alert{} > 0
-      for: 1m
+      for: 0m
       labels:
         severity: warning
         owner: sales
@@ -76,7 +76,7 @@ groups:
 #1  # Internal_Ancillary_Revenue_credco
     - alert: Internal_Ancillary_Revenue_credco
       expr: sales_sql_data_alert{partner_name="Internal_Ancillary_Revenue",vertical="credco"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Internal_Ancillary_Revenue_credco
         severity: critical
@@ -87,7 +87,7 @@ groups:
 #2  # Internal_Cascade_Decliners_credco
     - alert: Internal_Cascade_Decliners_credco
       expr: sales_sql_data_alert{partner_name="Internal_Cascade_Decliners",vertical="credco"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Internal_Cascade_Decliners_credco
         severity: critical
@@ -98,7 +98,7 @@ groups:
 #3  # Internal_Cascade_Prepaids_credco
     - alert: Internal_Cascade_Prepaids_credco
       expr: sales_sql_data_alert{partner_name="Internal_Cascade_Prepaids",vertical="credco"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Internal_Cascade_Prepaids_credco
         severity: critical
@@ -109,7 +109,7 @@ groups:
 #4  # Internal_Cascade_BIN_credco
     - alert: Internal_Cascade_BIN_credco
       expr: sales_sql_data_alert{partner_name="Internal_Cascade_BIN",vertical="credco"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Internal_Cascade_BIN_credco
         severity: critical
@@ -120,7 +120,7 @@ groups:
 #5  # Xanadu_Marketing_credco
     - alert: Xanadu_Marketing_credco
       expr: sales_sql_data_alert{partner_name="Xanadu Marketing",vertical="credco"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Xanadu_Marketing_credco
         severity: critical
@@ -131,7 +131,7 @@ groups:
 #6  # RateSpecial_credco
     - alert: RateSpecial_credco
       expr: sales_sql_data_alert{partner_name="RateSpecial",vertical="credco"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: RateSpecial_credco
         severity: critical
@@ -142,7 +142,7 @@ groups:
 #7  # Fluent_credco
     - alert: Fluent_credco
       expr: sales_sql_data_alert{partner_name="Fluent",vertical="credco"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Fluent_credco
         severity: critical
@@ -153,7 +153,7 @@ groups:
 #8  # Big_Steps_Marketing_credco
     - alert: Big_Steps_Marketing_credco
       expr: sales_sql_data_alert{partner_name="Big Steps Marketing",vertical="credco"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Big_Steps_Marketing_credco
         severity: critical
@@ -164,7 +164,7 @@ groups:
 #9  # Internal_SEM_foreclosure
     - alert: Internal_SEM_foreclosure
       expr: sales_sql_data_alert{partner_name="Internal_SEM",vertical="foreclosure"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Internal_SEM_foreclosure
         severity: critical
@@ -176,7 +176,7 @@ groups:
 #10 # Internal_SMS_foreclosure
     - alert: Internal_SMS_foreclosure
       expr: sales_sql_data_alert{partner_name="Internal_SMS",vertical="foreclosure"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Internal_SMS_foreclosure
         severity: critical
@@ -187,7 +187,7 @@ groups:
 #11 # Internal_Cascade_Decliners_foreclosure
     - alert: Internal_Cascade_Decliners_foreclosure
       expr: sales_sql_data_alert{partner_name="Internal_Cascade_Decliners",vertical="foreclosure"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Internal_Cascade_Decliners_foreclosure
         severity: critical
@@ -198,7 +198,7 @@ groups:
 #12 # Internal_Cascade_Prepaids_foreclosure_rto
     - alert: Internal_Cascade_Prepaids_foreclosure_rto
       expr: sales_sql_data_alert{partner_name="Internal_Cascade_Prepaids",vertical="foreclosure_rto"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Internal_Cascade_Prepaids_foreclosure_rto
         severity: critical
@@ -209,7 +209,7 @@ groups:
 #13 # Fluent_foreclosure_rto
     - alert: Fluent_foreclosure_rto
       expr: sales_sql_data_alert{partner_name="Fluent",vertical="foreclosure_rto"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Fluent_foreclosure_rto
         severity: critical 
@@ -220,7 +220,7 @@ groups:
 #14 # Internal_Cascade_Decliners_rto
     - alert: Internal_Cascade_Decliners_rto
       expr: sales_sql_data_alert{partner_name="Internal_Cascade_Decliners",vertical="rto"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Internal_Cascade_Decliners_rto
         severity: critical
@@ -231,7 +231,7 @@ groups:
 #15 # Internal_Cascade_Prepaids_rto
     - alert: Internal_Cascade_Prepaids_rto
       expr: sales_sql_data_alert{partner_name="Internal_Cascade_Prepaids",vertical="rto"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Internal_Cascade_Prepaids_rto
         severity: critical
@@ -242,7 +242,7 @@ groups:
 #16 # Internal_Cascade_BIN_rto
     - alert: Internal_Cascade_BIN_rto
       expr: sales_sql_data_alert{partner_name="Internal_Cascade_BIN",vertical="rto"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Internal_Cascade_BIN_rto
         severity: critical
@@ -253,7 +253,7 @@ groups:
 #17 # LeadQual_rto
     - alert: LeadQual_rto
       expr: sales_sql_data_alert{partner_name="LeadQual",vertical="rto"} > 0
-      for: 1m
+      for: 0m
       labels:  
         owner: LeadQual_rto
         severity: critical
@@ -264,7 +264,7 @@ groups:
 #18 # SkyRocket_rto
     - alert: SkyRocket_rto
       expr: sales_sql_data_alert{partner_name="SkyRocket",vertical="rto"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: SkyRocket_rto
         severity: critical
@@ -275,7 +275,7 @@ groups:
 #19 # Fluent_rto
     - alert: Fluent_rto
       expr: sales_sql_data_alert{partner_name="Fluent",vertical="rto"} > 0
-      for: 1m
+      for: 0m
       labels:
         owner: Fluent_rto
         severity: critical
@@ -286,7 +286,7 @@ groups:
 #20 # RxMG_rto
     - alert: RxMG_rto
       expr: sales_sql_data_alert{partner_name="RxMG",vertical="rto"} > 0
-      for: 1m     
+      for: 0m     
       labels:
         owner: RxMG_rto
         severity: critical
