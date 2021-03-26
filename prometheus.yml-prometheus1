@@ -69,8 +69,8 @@ scrape_configs:
                  ]
 
   - job_name: 'jmx_exporter_activemq'
-    scrape_interval: 30s
-    scrape_timeout:  15s
+    scrape_interval: 20s
+    scrape_timeout:  10s
     static_configs:
       - targets: [
                   'appserv-smith:9102','appserv-wesson:9102','appserv-sturm:9102','appserv-ruger:9102','appserv-mauser:9102',
@@ -116,14 +116,14 @@ scrape_configs:
       - targets: [ 'db01:9181','db01repl2:9181' ]
 
   - job_name: 'sales_exporter'
-    scrape_interval: 30s
-    scrape_timeout:  10s
+    scrape_interval: 15s #30s caused pending to get stuck
+    scrape_timeout:  5s
     static_configs:
       - targets: [ 'db01:9188','db01repl2:9188' ]
 
   - job_name: 'billing_exporter'
-    scrape_interval: 30s
-    scrape_timeout:  10s
+    scrape_interval: 15s
+    scrape_timeout:  5s
     static_configs:
       - targets: [ 'db01repl3:9184' ]
 
