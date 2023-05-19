@@ -1,0 +1,104 @@
+
+groups:
+
+  - name: ipmi_exporter.rules
+    rules:
+
+    # ipmi_up {collector="<NAME>"} reports 1 collected successfully
+    - alert: IPMI_up
+      expr: ipmi_up != 1
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Instance {{ $labels.instance }} IPMI down"
+        description: "{{ $labels.instance }} of job {{ $labels.job }} IPMI has been down for more than 5 minutes."
+
+    # Hardware System Event Log (SEL) count
+    - alert: IPMI_sel_logs_count
+      expr: ipmi_sel_logs_count > 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Instance {{ $labels.instance }} - ipmi_sel_logs_count"
+        description: "Hardware System Event Log (SEL) count \n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # Physical hardware component too hot
+    - alert: IPMI_temperature_celsius
+      expr: ipmi_temperature_celsius > 75
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host physical component too hot (instance {{ $labels.instance }})"
+        description: "Physical hardware gt 75 Celsius \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # IPMI_temperature_state 0 normal, 1 warning, 2 critical, NaN
+    - alert: IPMI_temperature_state
+      expr: ipmi_temperature_state > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "IPMI_temperature_state (instance {{ $labels.instance }})"
+        description: "IPMI_temperature_state \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # IPMI_fan_speed_state 0 normal, 1 warning, 2 critical, NaN
+    - alert: IPMI_fan_speed_state
+      expr: ipmi_fan_speed_state > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "IPMI_fan_speed_state (instance {{ $labels.instance }})"
+        description: "IPMI_fan_speed_state \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # IPMI_voltage_state 0 normal, 1 warning, 2 critical, NaN
+    - alert: IPMI_voltage_state
+      expr: ipmi_voltage_state > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "IPMI_voltage_state (instance {{ $labels.instance }})"
+        description: "IPMI_voltage_state \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # IPMI_chassis_power_state 0 off, 1 on
+    - alert: IPMI_chassis_power_state
+      expr: ipmi_chassis_power_state == 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "IPMI_chassis_power_state (instance {{ $labels.instance }})"
+        description: "IPMI_chassis_power_state \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # IPMI_voltage_volts 0 off
+    - alert: IPMI_voltage_volts
+      expr: ipmi_voltage_volts == 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "IPMI_voltage_volts (instance {{ $labels.instance }})"
+        description: "IPMI_voltage_volts \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # IPMI_fan_speed_rpm 0 broken fan
+    - alert: IPMI_fan_speed_rpm
+      expr: IPMI_fan_speed_rpm == 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "ipmi_fan_speed_rpm (instance {{ $labels.instance }})"
+        description: "ipmi_fan_speed_rpm \n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+
