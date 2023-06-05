@@ -1,0 +1,24 @@
+
+groups:
+
+  - name: wmi_exporter.rules
+    rules:
+
+   - alert: InstanceDown
+     expr: up == 0
+     for: 5m
+     labels:
+       severity: critical
+     annotations:
+       summary: "Instance {{ $labels.instance }} down"
+       description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
+
+   - alert: DiskSpaceUsage
+     expr: 100.0 - 100 * (windows_logical_disk_free_bytes / windows_logical_disk_size_bytes) > 60
+     for: 5m
+     labels:
+       severity: warning
+     annotations:
+       summary: "Disk Space Usage (instance {{ $labels.instance }})"
+
+
