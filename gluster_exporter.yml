@@ -1,0 +1,103 @@
+
+
+# https://github.com/gluster/gluster-prometheus
+
+groups:
+
+  - name: gluster-exporter
+    rules:
+
+    # gluster_volume_up Volume is started or not (1-started, 0-not started)
+    - alert: GlusterVolumeDown
+      expr: gluster_volume_up != 1
+      for: 5m
+      labels:
+        severity: critical
+        owner: gluster
+      annotations:
+        summary: "Instance {{ $labels.instance }} - gluster_volume is Down"
+        description: "{{ $labels.instance }} of job {{ $labels.job }} gluster_volume Down\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # gluster_brick_up Brick up (1-up, 0-down)
+    - alert: GlusterBrickDown
+      expr: gluster_brick_up != 1
+      for: 5m
+      labels:
+        severity: critical
+        owner: gluster
+      annotations:
+        summary: "Instance {{ $labels.instance }} - gluster_brick is Down"
+        description: "{{ $labels.instance }} of job {{ $labels.job }} gluster_brick Down\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # gluster_peer_connected
+    - alert: GlusterPeerConnected
+      expr: gluster_peer_connected == 0
+      for: 5m
+      labels:
+        severity: critical
+        owner: gluster
+      annotations:
+        summary: "Instance {{ $labels.instance }} - gluster_peer_connected"
+        description: "{{ $labels.instance }} of job {{ $labels.job }} gluster_peer_connected zero\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # gluster_peer_status
+    - alert: GlusterPeerStatus
+      expr: gluster_peer_status != 0
+      for: 5m
+      labels:
+        severity: critical
+        owner: gluster
+      annotations:
+        summary: "Instance {{ $labels.instance }} - gluster_peer_status"
+        description: "{{ $labels.instance }} of job {{ $labels.job }} gluster_peer_status not zero\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # gluster_volume_brick_count
+    - alert: GlusterVolumeBrickCount
+      expr: gluster_volume_brick_count < 2
+      for: 5m
+      labels:
+        severity: critical
+        owner: gluster
+      annotations:
+        summary: "Instance {{ $labels.instance }} - gluster_volume_brick_count"
+        description: "{{ $labels.instance }} of job {{ $labels.job }} gluster_volume_brick_count less than two\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # gluster_volume_brick_status
+    - alert: GlusterVolumeBrickStatus
+      expr: gluster_volume_brick_status != 1
+      for: 5m
+      labels:
+        severity: critical
+        owner: gluster
+      annotations:
+        summary: "Instance {{ $labels.instance }} - gluster_volume_brick_status"
+        description: "{{ $labels.instance }} of job {{ $labels.job }} gluster_volume_brick_status not equal one\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+    # gluster_volume_heal_count
+    - alert: GlusterVolumeHealCount
+      expr: gluster_volume_heal_count > 0
+      for: 5m
+      labels:
+        severity: critical
+        owner: gluster
+      annotations:
+        summary: "Instance {{ $labels.instance }} - gluster_volume_heal_count"
+        description: "{{ $labels.instance }} of job {{ $labels.job }} gluster_volume_heal_count not equal zero\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    # gluster_volume_split_brain_heal_count
+    - alert: GlusterVolumeSplitBrainHealCount
+      expr: gluster_volume_split_brain_heal_count > 0
+      for: 5m
+      labels:
+        severity: critical
+        owner: gluster
+      annotations:
+        summary: "Instance {{ $labels.instance }} - gluster_volume_split_brain_heal_count"
+        description: "{{ $labels.instance }} of job {{ $labels.job }} gluster_volume_split_brain_heal_count not equal zero\n VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+
+
+
